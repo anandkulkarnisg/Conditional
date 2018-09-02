@@ -10,6 +10,7 @@
 class Conditional
 {
 	private:
+		unsigned int m_count = 0;
 		bool m_status = false;
 		std::mutex m_mutex;
 		std::condition_variable m_cond;

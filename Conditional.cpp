@@ -15,14 +15,23 @@ Conditional::Conditional() : m_status(false)
 void Conditional::wait()
 {
 	unique_lock<mutex> exclusiveLock(m_mutex);
+	++m_count;
 	m_cond.wait(exclusiveLock, [&](){ return(this->m_status==true); });
+	if(--m_count==0)
+		m_status=false;
 }
 
 // Implement the wait method with timeout parameter. If it times out with out signal then returns false else upon signal immediately returns with true.
 bool Conditional::wait(const long& waitTimeInMilliSecs) 
 {
 	unique_lock<mutex> exclusiveLock(m_mutex);
+	++m_count;
 	m_cond.wait_for(exclusiveLock, std::chrono::milliseconds(waitTimeInMilliSecs), [&](){ return(this->m_status==true); });
+	if(m_status)	
+	{
+		if(--m_count==0)
+			m_status=false;
+	}
 	return(m_status);
 }
 
