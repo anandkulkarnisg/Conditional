@@ -39,6 +39,7 @@ bool Conditional::wait(const long& waitTimeInMilliSecs)
 // Implement signalOne. This can signal any one thread , but particular thread can not be targeted. currently not supported but can be implemented.
 void Conditional::signalOne()
 {
+	unique_lock<mutex> exclusiveLock(m_mutex);
 	m_status=true;
 	m_cond.notify_one();
 }
@@ -46,6 +47,7 @@ void Conditional::signalOne()
 // Implement signalAll. This can signal all threads.
 void Conditional::signalAll()
 {
+	unique_lock<mutex> exclusiveLock(m_mutex);
 	m_status=true;
 	m_cond.notify_all();
 }
