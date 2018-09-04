@@ -14,7 +14,7 @@ Conditional cond;
 mutex cout_mutex;
 const int demoThreadPoolSize = 10;
 
-void printCout(const string& message)
+void printMessage(string message) // remove const ref to facilitate std::move
 {
 	unique_lock<mutex> exclusiveLock(cout_mutex);
 	cout << message << endl;
@@ -26,16 +26,14 @@ string getThreadId()
 	stringstream ss;
 	ss << myid;
 	string resultString = ss.str();
-	return(resultString);
+	return resultString;
 }
 
 void waitThread()
 {
-	string message = "currently i am waiting from this thread id = " + getThreadId();
-	printCout(message);
+	printMessage("currently i am waiting from this thread id = " + getThreadId());
 	cond.wait();
-	message = "thread id = " + getThreadId() + " is quitting now";
-	printCout(message);
+	printMessage("thread id = " + getThreadId() + " is quitting now");
 }
 
 int main(int argc, char* argv[])
@@ -46,19 +44,25 @@ int main(int argc, char* argv[])
 	
 	// spwan the threads.
 	for(unsigned int i=0; i<demoThreadPoolSize;++i)
+	{
 		threadPool.emplace_back(thread(&waitThread));
+	}
 
 	// Now wait for around 10 seconds and signal all of them to quit.
-	cout << "Main thread sleeping now for 10 secs and then signalling to quit" << endl;
+	printMessage("Main thread sleeping now for 10 secs and then signalling to quit");
 	this_thread::sleep_for(chrono::seconds(10));
-	cout << "Main thread signalling now to quit one by one" << endl;
+
 	for(unsigned int i=1; i<=demoThreadPoolSize; ++i)
 	{
+		printMessage("Main thread signalling now to quit one thread");
 		cond.signalOne();
 		this_thread::sleep_for(chrono::milliseconds(1000));
 	}
 	
 	// Join all the threads.	
 	for_each(threadPool.begin(), threadPool.end(), [&](thread& threadItem) { threadItem.join(); });
-	return(0);
+
+	printMessage(cond.dump());
+
+	return 0;
 }
