@@ -3,6 +3,7 @@
 #include<mutex>
 #include<condition_variable>
 #include<chrono>
+#include<atomic>
 
 #ifndef Conditional_H
 #define Conditional_H
@@ -10,8 +11,8 @@
 class Conditional
 {
 	private:
-		unsigned int m_count = 0;
-		bool m_status = false;
+		std::atomic<unsigned int> m_count;
+		std::atomic<bool> m_status;
 		std::mutex m_mutex;
 		std::condition_variable m_cond;
 
