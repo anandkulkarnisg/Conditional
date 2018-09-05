@@ -18,6 +18,7 @@ void Conditional::wait()
 	m_count.fetch_add(1);
 	unique_lock<mutex> exclusiveLock(m_mutex);
 	m_cond.wait(exclusiveLock, [&](){ return(this->m_status==true); });
+	exclusiveLock.unlock();
 	if(--m_count==0)
 		m_status=false;
 }
@@ -28,6 +29,7 @@ bool Conditional::wait(const long& waitTimeInMilliSecs)
 	m_count.fetch_add(1);
 	unique_lock<mutex> exclusiveLock(m_mutex);
 	m_cond.wait_for(exclusiveLock, std::chrono::milliseconds(waitTimeInMilliSecs), [&](){ return(this->m_status==true); });
+	exclusiveLock.unlock();
 	bool returnStatus=false;
 	if(m_status)
 		returnStatus=m_status;
