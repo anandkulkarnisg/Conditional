@@ -60,9 +60,16 @@ int main(int argc, char* argv[])
 
 		// Insert the resulting string status to the set.
 		testResultSet.insert(cond.toString());
+	
+		// Show something on the stdout for progress.
+		cout << "Finished the testing case : " << i << endl;
 	}
 
-	assert (testResultSet.size()==1);
-
+	//assert (testResultSet.size()==1); problem with assert is it will dump core and exit if assertion fails.
+	
+	if(testResultSet.size() == 1)
+		cout << "Test case result : Successfull!!" << endl;
+	else
+		cout << "Test case failed. There is a race somewhere" << endl;
 	return 0;
 }
