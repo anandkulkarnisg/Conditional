@@ -18,13 +18,14 @@ class Conditional
 
 	public:
 		Conditional();
+        ~Conditional() = default;
 		Conditional(const Conditional&) = delete;
 		Conditional& operator=(const Conditional&) = delete;
 		void wait();
 		bool wait(const long&);
 		void signalOne();
 		void signalAll();
-		~Conditional();
+        std::string toString() const;
 };
 
 #endif
