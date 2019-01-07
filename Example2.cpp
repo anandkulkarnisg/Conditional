@@ -73,14 +73,5 @@ int main(int argc, char* argv[])
   }
 
   //assert (testResultSet.size()==1); problem with assert is it will dump core and exit if assertion fails.
-
-  if(testResultSet.size() == 1)
-    cout << "Test case result : Successfull!!" << endl;
-  else
-  {
-    cout << "Test case failed. There is a race somewhere" << endl;
-    for(const auto& iter : testResultSet)
-      cout << iter << endl;
-  }
   return 0;
 }
